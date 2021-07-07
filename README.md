@@ -23,7 +23,6 @@
 # Vantage
 Linux port of lenova vantage software but in terminal 😃
 
-
 # Build instructions:
 ~~~bash
 mkdir build
@@ -31,5 +30,14 @@ cd build
 cmake ..
 make -j3
 ./vantage
+~~~
+
+# Installation
+~~~bash
+mkdir build
+cd build
+cmake ..
+sudo make install 
+sudo vantage
 ~~~
 
