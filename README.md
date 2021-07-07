@@ -24,7 +24,13 @@
 Linux port of lenova vantage software but in terminal 😃
 - This is a TUI for lenova laptops with option for conservation mode in linux
 - Alternate for lenova vantage in linux
+- Supports mouse click
+- ctrl-c to exit
 - Feel free to use and contribute
+
+# usage 
+<img src="./assets/usage.gif"  height="200" />
+
 # Build instructions:
 ~~~bash
 mkdir build
@@ -58,7 +64,8 @@ sudo vantage
 - add control for keyboard backlight
 - add control power mode
 - add more widgets in tui
-- add control for switching optimus
+- add control for switching optimus enabled dGPU systems
+- add shortcuts
 
 ## not in scope of project
 
