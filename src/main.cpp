@@ -62,8 +62,8 @@ int main(int argc, const char* argv[]) {
       L"On",
   };
   std::vector<std::wstring> tab_2_entries{
-      L"On",
       L"Off",
+      L"On",
   };
   std::vector<std::wstring> tab_3_entries{
       L"Off",
