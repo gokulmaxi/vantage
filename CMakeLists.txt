@@ -19,7 +19,7 @@ endif()
 
 project(vantage
   LANGUAGES CXX
-  VERSION 1.0.0
+  VERSION 2.0.0
 )
 
 add_executable(vantage src/main.cpp)
