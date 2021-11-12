@@ -75,12 +75,12 @@ tab1.on_change=[&]{sprintf(conservationStr,
                               "VPC2004:00/con", 
                               tab_1_selected); 
                       system(conservationStr); };
-tab2.on_change=[&]{sprintf(conservationStr, 
+tab2.on_change=[&]{sprintf(fnLockStr, 
                               "echo %d > " 
                               "/sys/bus/platform/drivers/ideapad_acpi/"
                               "VPC2004:00/fn_lock", 
                               tab_2_selected); 
-                      system(conservationStr); };
+                      system(fnLockStr); };
   auto tab_container = Container::Tab(
       {
           Radiobox(&tab_1_entries, &tab_1_selected,tab1),
