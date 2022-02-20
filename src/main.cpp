@@ -5,7 +5,7 @@
 #include <memory>  // for allocator, __shared_ptr_access, shared_ptr
 #include <string>  // for wstring, basic_string
 #include <vector>  // for vector
-
+#include "utils.hpp"
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Radiobox, Horizontal, Menu, Renderer, Tab
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
@@ -39,27 +39,6 @@ int execute(const std::string& command) {
   return std::stoi(ret);
 }
 
-/**
- * @brief calls acpi interface
- *
- * @param request string of acpi request
- *
- * @return
- */
-std::string callACPI(const std::string& request) {
-  FILE* f = fopen("/proc/acpi/call", "w+t");
-  if (!f) {
-    perror("unable to open /proc/acpi/call");
-    exit(2);
-  }
-
-  fprintf(f, "%s\n", request.c_str());
-  char buf[200];
-  size_t r = fread(buf, 1, sizeof(buf), f);
-  fclose(f);
-
-  return {buf, buf + r};
-}
 int main(int argc, const char* argv[]) {
   int value = 50;
 
