@@ -59,7 +59,7 @@ sudo vantage
 ~~~
 
 # TODO
-
+- complete modprobe version
 - add binary package to AUR
 - add control for keyboard backlight
 - add control power mode
