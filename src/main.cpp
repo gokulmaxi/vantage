@@ -17,7 +17,7 @@ char conservationStr[80];
 char fnLockStr[80];
 struct RadioboxOption tab1;
 struct RadioboxOption tab2;
-
+struct RadioboxOption tab3;
 
 /**
  * @brief executes the system command and gives th output
@@ -39,6 +39,27 @@ int execute(const std::string& command) {
   return std::stoi(ret);
 }
 
+/**
+ * @brief calls acpi interface
+ *
+ * @param request string of acpi request
+ *
+ * @return
+ */
+std::string callACPI(const std::string& request) {
+  FILE* f = fopen("/proc/acpi/call", "w+t");
+  if (!f) {
+    perror("unable to open /proc/acpi/call");
+    exit(2);
+  }
+
+  fprintf(f, "%s\n", request.c_str());
+  char buf[200];
+  size_t r = fread(buf, 1, sizeof(buf), f);
+  fclose(f);
+
+  return {buf, buf + r};
+}
 int main(int argc, const char* argv[]) {
   int value = 50;
 
@@ -53,7 +74,8 @@ int main(int argc, const char* argv[]) {
   std::vector<std::wstring> tab_values{
       L"Conservation Mode",
       L"fn_lock",
-      L"Mouse Lock",
+      L"Battery saving",
+      L"Rapid charging",
   };
   auto tab_menu = Menu(&tab_values, &tab_selected);
 
@@ -66,27 +88,45 @@ int main(int argc, const char* argv[]) {
       L"On",
   };
   std::vector<std::wstring> tab_3_entries{
+      L"intelligent_cooling",
+      L"extreme_performance",
+      L"battery_saving",
+  };
+  std::vector<std::wstring> tab_4_entries{
       L"Off",
       L"On",
   };
-tab1.on_change=[&]{sprintf(conservationStr, 
-                              "echo %d > " 
-                              "/sys/bus/platform/drivers/ideapad_acpi/"
-                              "VPC2004:00/con", 
-                              tab_1_selected); 
-                      system(conservationStr); };
-tab2.on_change=[&]{sprintf(fnLockStr, 
-                              "echo %d > " 
-                              "/sys/bus/platform/drivers/ideapad_acpi/"
-                              "VPC2004:00/fn_lock", 
-                              tab_2_selected); 
-                      system(fnLockStr); };
+  tab1.on_change = [&] {
+    if (tab_1_selected) {
+      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03");
+    } else {
+      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05");
+    }
+  };
+  tab2.on_change = [&] {
+    sprintf(fnLockStr,
+            "echo %d > "
+            "/sys/bus/platform/drivers/ideapad_acpi/"
+            "VPC2004:00/fn_lock",
+            tab_2_selected);
+    system(fnLockStr);
+  };
+  tab3.on_change = [&] {
+    if (tab_3_selected == 0) {
+      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001");
+    } else if (tab_3_selected == 1) {
+      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001");
+    } else if (tab_3_selected == 2) {
+      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001");
+    }
+  };
+
   auto tab_container = Container::Tab(
       {
-          Radiobox(&tab_1_entries, &tab_1_selected,tab1),
-          Radiobox(&tab_2_entries, &tab_2_selected,tab2),
-          /* Radiobox(&tab_3_entries, &tab_3_selected, [&] { }), //TODO add the
-             function to disable the mouse  */
+          Radiobox(&tab_1_entries, &tab_1_selected, tab1),
+          Radiobox(&tab_2_entries, &tab_2_selected, tab2),
+          Radiobox(&tab_3_entries, &tab_3_selected, tab3),  // TODO add the
+          /* function to disable the mouse  */
       },
       &tab_selected);
 
