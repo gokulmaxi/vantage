@@ -57,3 +57,21 @@ int consvervationModeStatus(){
   return result;
 }
 //TODO add functions for toggling acpi modules 
+void toggleRapidCharge(int state){
+        if(state == 0){
+                callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08");
+        }
+        else{
+                callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07");
+        }
+}
+void toggleConservationMode(int state){
+
+        if(state == 1){
+                callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03");
+                toggleRapidCharge(0);
+        }
+        else{
+                callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05");
+        }
+}

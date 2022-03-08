@@ -18,6 +18,7 @@ char fnLockStr[80];
 struct RadioboxOption tab1;
 struct RadioboxOption tab2;
 struct RadioboxOption tab3;
+struct RadioboxOption tab4;
 
 /**
  * @brief executes the system command and gives th output
@@ -48,8 +49,8 @@ int main(int argc, const char* argv[]) {
       "/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode");
   int tab_2_selected =
       execute("cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/fn_lock");
-  int tab_3_selected = 0;
-
+  int tab_3_selected = fanStatus();
+ int tab_4_selected = rapidChargeStatus();
   std::vector<std::wstring> tab_values{
       L"Conservation Mode",
       L"fn_lock",
@@ -75,13 +76,7 @@ int main(int argc, const char* argv[]) {
       L"Off",
       L"On",
   };
-  tab1.on_change = [&] {
-    if (tab_1_selected) {
-      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03");
-    } else {
-      callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05");
-    }
-  };
+  tab1.on_change = [&] {toggleConservationMode(tab_1_selected);};
   tab2.on_change = [&] {
     sprintf(fnLockStr,
             "echo %d > "
@@ -99,12 +94,13 @@ int main(int argc, const char* argv[]) {
       callACPI("\\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001");
     }
   };
-
+  tab4.on_change = [&]{toggleRapidCharge(tab_4_selected);};
   auto tab_container = Container::Tab(
       {
           Radiobox(&tab_1_entries, &tab_1_selected, tab1),
           Radiobox(&tab_2_entries, &tab_2_selected, tab2),
           Radiobox(&tab_3_entries, &tab_3_selected, tab3),  // TODO add the
+          Radiobox(&tab_4_entries, &tab_4_selected, tab4),  // TODO add the
           /* function to disable the mouse  */
       },
       &tab_selected);
