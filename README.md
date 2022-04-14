@@ -55,6 +55,8 @@ mkdir build
 cd build
 cmake ..
 sudo make install 
+sudo apt install acpi-call-dkms
+sudo modprobe acpi_call
 sudo vantage
 ~~~
 
